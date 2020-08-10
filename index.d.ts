@@ -3,7 +3,6 @@ declare module 'react-native-circular-progress' {
   import {
     Animated,
     Easing,
-    EasingFunction,
     ViewPropTypes,
     StyleProp,
     ViewStyle
@@ -50,19 +49,11 @@ declare module 'react-native-circular-progress' {
 
     /**
      * Change the fill color from tintColor to tintColorSecondary as animation progresses.
-     *
+     * 
      * @type {string}
      * @default 'undefined'
      */
     tintColorSecondary?: string;
-
-    /**
-     * Current progress / tint transparency
-     *
-     * @type {boolean}
-     * @default true
-     */
-    tintTransparency?: boolean;
 
     /**
      * If unspecified, no background line will be rendered
@@ -86,14 +77,6 @@ declare module 'react-native-circular-progress' {
      * @default 'butt'
      */
     lineCap?: 'butt' | 'round' | 'square';
-
-    /**
-     * Shape used at ends of progress line.
-     *
-     * @type {('butt' | 'round' | 'square')}
-     * @default lineCap - which is 'butt'
-     */
-    fillLineCap?: 'butt' | 'round' | 'square';
 
     /**
      * If you don't want a full circle, specify the arc angle
@@ -147,7 +130,7 @@ declare module 'react-native-circular-progress' {
      * @type {Function}
      * @default Easing.out(Easing.ease)
      */
-    easing?: EasingFunction;
+    easing?: () => void;
 
     /**
      * Function that's invoked when the animation completes (both on mount and if called with .animate())
@@ -169,15 +152,8 @@ declare module 'react-native-circular-progress' {
      */
     renderCap?: (payload: {
       center: { x: number; y: number };
+      fill: number ;
     }) => React.ReactNode;
-
-    /**
-     * Use dashed type for tint/progress line
-     *
-     * @type { width: number; gap: number }
-     * @default '{ width: 0, gap: 0 }'
-     */
-    dashedTint?: { width: number; gap: number };
 
     /**
      * Use dashed type for background
@@ -198,7 +174,7 @@ declare module 'react-native-circular-progress' {
      * @param {number} duration
      * @param {Function} ease
      */
-    animate: (toVal: number, duration: number, ease?: EasingFunction) => Animated.CompositeAnimation;
+    animate: (toVal: number, duration: number, ease?: Function) => Animated.CompositeAnimation;
 
     /**
      * Re-run animation with a specified prefill-value
@@ -212,7 +188,7 @@ declare module 'react-native-circular-progress' {
       prefill: number,
       toVal: number,
       duration: number,
-      ease?: EasingFunction
+      ease?: Function
     ) => void;
   }
 }

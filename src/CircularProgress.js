@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import { View, ViewPropTypes } from 'react-native';
 import { Svg, Path, G } from 'react-native-svg';
 
 export default class CircularProgress extends React.PureComponent {
@@ -28,12 +28,10 @@ export default class CircularProgress extends React.PureComponent {
       width,
       backgroundWidth,
       tintColor,
-      tintTransparency,
       backgroundColor,
       style,
       rotation,
       lineCap,
-      fillLineCap = lineCap,
       arcSweepAngle,
       fill,
       children,
@@ -41,21 +39,20 @@ export default class CircularProgress extends React.PureComponent {
       padding,
       renderCap,
       dashedBackground,
-      dashedTint
     } = this.props;
 
     const maxWidthCircle = backgroundWidth ? Math.max(width, backgroundWidth) : width;
     const sizeWithPadding = size / 2 + padding / 2;
     const radius = size / 2 - maxWidthCircle / 2 - padding / 2;
 
-    const currentFillAngle = (arcSweepAngle * this.clampFill(fill)) / 100;
     const backgroundPath = this.circlePath(
       sizeWithPadding,
       sizeWithPadding,
       radius,
-      tintTransparency ? 0 : currentFillAngle,
+      0,
       arcSweepAngle
     );
+    const currentFillAngle = (arcSweepAngle * this.clampFill(fill)) / 100;
     const circlePath = this.circlePath(
       sizeWithPadding,
       sizeWithPadding,
@@ -69,7 +66,7 @@ export default class CircularProgress extends React.PureComponent {
       radius,
       currentFillAngle
     );
-    const cap = this.props.renderCap ? this.props.renderCap({ center: coordinate }) : null;
+    const cap = this.props.renderCap ? this.props.renderCap({ center: coordinate, fill }) : null;
 
     const offset = size - maxWidthCircle * 2;
 
@@ -88,14 +85,13 @@ export default class CircularProgress extends React.PureComponent {
       ...childrenContainerStyle,
     }
 
-    const strokeDasharrayTint = dashedTint.gap > 0 ?
-      Object.values(dashedTint)
-      .map(value => parseInt(value))
-      : null;
+    const dashedBackgroundStyle = dashedBackground.gap > 0
+      ? dashedBackground
+      : { width:0, gap:0 };
 
-    const strokeDasharrayBackground = dashedBackground.gap > 0 ?
-      Object.values(dashedBackground)
-      .map(value => parseInt(value))
+    const strokeDasharray = dashedBackground.gap > 0 ? 
+    Object.values(dashedBackgroundStyle)
+      .map(value => parseInt(value)) 
       : null;
 
     return (
@@ -108,7 +104,7 @@ export default class CircularProgress extends React.PureComponent {
                 stroke={backgroundColor}
                 strokeWidth={backgroundWidth || width}
                 strokeLinecap={lineCap}
-                strokeDasharray={strokeDasharrayBackground}
+                strokeDasharray={strokeDasharray}
                 fill="transparent"
               />
             )}
@@ -117,8 +113,7 @@ export default class CircularProgress extends React.PureComponent {
                 d={circlePath}
                 stroke={tintColor}
                 strokeWidth={width}
-                strokeLinecap={fillLineCap}
-                strokeDasharray={strokeDasharrayTint}
+                strokeLinecap={lineCap}
                 fill="transparent"
               />
             )}
@@ -132,32 +127,28 @@ export default class CircularProgress extends React.PureComponent {
 }
 
 CircularProgress.propTypes = {
-  style: PropTypes.object,
+  style: ViewPropTypes.style,
   size: PropTypes.number.isRequired,
   fill: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   backgroundWidth: PropTypes.number,
   tintColor: PropTypes.string,
-  tintTransparency: PropTypes.bool,
   backgroundColor: PropTypes.string,
   rotation: PropTypes.number,
   lineCap: PropTypes.string,
   arcSweepAngle: PropTypes.number,
   children: PropTypes.func,
-  childrenContainerStyle: PropTypes.object,
+  childrenContainerStyle: ViewPropTypes.style,
   padding: PropTypes.number,
   renderCap: PropTypes.func,
   dashedBackground: PropTypes.object,
-  dashedTint: PropTypes.object
 };
 
 CircularProgress.defaultProps = {
   tintColor: 'black',
-  tintTransparency: true,
   rotation: 90,
   lineCap: 'butt',
   arcSweepAngle: 360,
   padding: 0,
   dashedBackground: { width: 0, gap: 0 },
-  dashedTint: { width: 0, gap: 0 },
 };
