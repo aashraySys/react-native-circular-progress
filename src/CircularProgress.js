@@ -22,6 +22,22 @@ export default class CircularProgress extends React.PureComponent {
 
   clampFill = fill => Math.min(100, Math.max(0, fill));
 
+  colorGetter(fillPercent){
+    
+    if(fillPercent > 1 && fillPercent < 50){
+        return '#ff5167'
+    }
+    if(fillPercent >= 50 && fillPercent < 75){
+        return '#f5a623'
+    }
+    if(fillPercent >= 75){
+        return '#7ccd1d'
+    }
+    else{
+      return '#c9c8ca'
+    }
+}
+
   render() {
     const {
       size,
@@ -39,6 +55,7 @@ export default class CircularProgress extends React.PureComponent {
       padding,
       renderCap,
       dashedBackground,
+      shouldUseDefaultRAG
     } = this.props;
 
     const maxWidthCircle = backgroundWidth ? Math.max(width, backgroundWidth) : width;
@@ -111,7 +128,7 @@ export default class CircularProgress extends React.PureComponent {
             {fill > 0 && (
               <Path
                 d={circlePath}
-                stroke={tintColor}
+                stroke={shouldUseDefaultRAG ? this.colorGetter(Math.floor(fill)) : tintColor}
                 strokeWidth={width}
                 strokeLinecap={lineCap}
                 fill="transparent"
@@ -142,6 +159,7 @@ CircularProgress.propTypes = {
   padding: PropTypes.number,
   renderCap: PropTypes.func,
   dashedBackground: PropTypes.object,
+  shouldUseDefaultRAG: PropTypes.bool,
 };
 
 CircularProgress.defaultProps = {

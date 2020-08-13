@@ -55,6 +55,17 @@ declare module 'react-native-circular-progress' {
      */
     tintColorSecondary?: string;
 
+        /**
+     * Change the fill color from tintColor to tintColorSecondary as animation progresses.
+     * 
+     * @type {string}
+     * @default 'undefined'
+     */
+    tintColorInputInterpolation?: Array;
+
+    tintColorOutputInterpolation?: Array;
+
+    shouldUseDefaultRAG?: Boolean;
     /**
      * If unspecified, no background line will be rendered
      *
